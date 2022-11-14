@@ -27,6 +27,14 @@ async function run() {
             const events = await cursor.toArray();
             res.send(events);
         });
+
+        // POST a new event from server-side to datebase | Create a new event POST API
+        app.post('/event', async(req, res) => {
+            const newEvent = req.body;
+            console.log('Adding a new Event = ', newEvent);
+            const result = await eventCollection.insertOne(newEvent);
+            res.send(result);
+        });
     }
     finally {
         // await client.close(); // commented, if I want to keep connection active;
