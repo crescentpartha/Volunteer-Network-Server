@@ -28,7 +28,7 @@ async function run() {
             res.send(events);
         });
 
-        // POST a new event from server-side to datebase | Create a new event POST API
+        // POST a new event from server-side to database | Create a new event POST API
         app.post('/event', async(req, res) => {
             const newEvent = req.body;
             console.log('Adding a new Event = ', newEvent);
