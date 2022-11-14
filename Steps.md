@@ -22,6 +22,12 @@ Table of Contents
     - [`Create a Form using react-hook-form to add a new event`](#create-a-form-using-react-hook-form-to-add-a-new-event)
     - [`POST a new event from client-side to server-side`](#post-a-new-event-from-client-side-to-server-side)
     - [`POST a new event from server-side to database`](#post-a-new-event-from-server-side-to-database)
+  - [Setup Dynamic Route and Access route params](#setup-dynamic-route-and-access-route-params)
+  - [Get a particular event from database and Create a GET API to get a particular event (___id-wise___)](#get-a-particular-event-from-database-and-create-a-get-api-to-get-a-particular-event-id-wise)
+    - [`Demo links of 04crud-product-management`](#demo-links-of-04crud-product-management-2)
+    - [`Get a particular event from database to server-side`](#get-a-particular-event-from-database-to-server-side)
+    - [`Create a custom hook with dependency to load individual event data` - (___id-wise___)](#create-a-custom-hook-with-dependency-to-load-individual-event-data---id-wise)
+    - [`Create a Controlled Inputs Form using React-Bootstrap`](#create-a-controlled-inputs-form-using-react-bootstrap)
 
 # Volunteer-Network-Server
 
@@ -409,6 +415,170 @@ async function run() {
     }
 }
 run().catch(console.dir);
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+## Setup Dynamic Route and Access route params
+
+- [Setup Dynamic Route and Access route params](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone10/module60-responsive-react-website-and-react-recap/00module-overview-and-react-review.md#612-setup-dynamic-route-and-access-route-params "Setup Dynamic Route and Access route params - module60-responsive-react-website-and-react-recap")
+
+**[🔼Back to Top](#table-of-contents)**
+
+## Get a particular event from database and Create a GET API to get a particular event (___id-wise___)
+
+### `Demo links of 04crud-product-management`
+
+- [Load single product data by using id and Setup form's field value](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone11/module66.5-CRUD-Update-and-Product-Management/04crud-product-management.md#load-single-product-data-by-using-id-and-setup-forms-field-value "Load single product data by using id and Setup form's field value - 04crud-product-management.md")
+- [Controlled Components - reactjs.org](https://reactjs.org/docs/forms.html#controlled-components "Controlled Components - reactjs.org")
+- [Controlled Inputs (forms) - The Net Ninja](https://www.youtube.com/watch?v=IkMND33x0qQ "Controlled Inputs (forms) - The Net Ninja | YouTube Video")
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `Get a particular event from database to server-side`
+
+``` JavaScript
+// In index.js
+
+// Create dynamic data transaction to/from the database
+async function run() {
+    try {
+        await client.connect();
+        const eventCollection = client.db('volunteerNetwork').collection('event');
+
+        // Load a particular event data from database to server-side | (id-wise data load)
+        app.get('/event/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await eventCollection.findOne(query);
+            res.send(result);
+        });
+    }
+    finally {
+        // await client.close(); // commented, if I want to keep connection active;
+    }
+}
+run().catch(console.dir);
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `Create a custom hook with dependency to load individual event data` - (___id-wise___)
+
+``` JavaScript
+// In useLoadSingleEvent.js
+
+import { useEffect, useState } from "react"
+
+const useLoadSingleEvent = (id) => {
+    const [event, setEvent] = useState({});
+
+    useEffect( () => {
+        const url = `http://localhost:5000/event/${id}`;
+        fetch(url)
+        .then(res => res.json())
+        .then(data => setEvent(data));
+    }, [id]);
+    
+    return [event, setEvent];
+}
+
+export default useLoadSingleEvent;
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `Create a Controlled Inputs Form using React-Bootstrap`
+
+``` JavaScript
+// In VolunteerRegistration.js
+
+import React, { useEffect, useState } from 'react';
+import { Button, Form } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import useLoadSingleEvent from '../../../hooks/useLoadSingleEvent';
+
+const VolunteerRegistration = () => {
+    const { eventDetailId } = useParams();
+    const [event] = useLoadSingleEvent(eventDetailId);
+    const { title, description } = event;
+    // console.log(event, title);
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [date, setDate] = useState('');
+    const [eventDescription, setEventDescription] = useState('');
+    const [eventTitle, setEventTitle] = useState('');
+
+    useEffect( () => {
+        setEventDescription(description);
+        setEventTitle(title);
+    }, [description, title]);
+
+    const handleRegistration = (e) => {
+        e.preventDefault();
+        const registration = { name, email, date, eventDescription, eventTitle };
+
+        console.log(registration);
+    }
+
+    return (
+        <div>
+            <div style={{ width: '500px' }} className='mt-5 mb-5 mx-auto p-4 border rounded shadow-md'>
+                <h2 className='text-start'>Register as a Volunteer</h2>
+                <Form onSubmit={handleRegistration} className='w-100 mx-auto'>
+                    <Form.Control
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        type="name"
+                        placeholder="Full Name"
+                        className='my-4 fw-semibold border-top-0 border-start-0 border-end-0 rounded-0 px-0'
+                        required
+                    />
+                    <Form.Control
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="email"
+                        placeholder="Username or Email"
+                        className='my-4 fw-semibold border-top-0 border-start-0 border-end-0 rounded-0 px-0'
+                        required
+                    />
+                    <Form.Control
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        type="date"
+                        placeholder="Date"
+                        className='my-4 fw-semibold border-top-0 border-start-0 border-end-0 rounded-0 px-0'
+                        required
+                    />
+                    <Form.Control
+                        value={eventDescription}
+                        onChange={(e) => setEventDescription(e.target.value)}
+                        type="text"
+                        placeholder="Description"
+                        className='my-4 fw-semibold border-top-0 border-start-0 border-end-0 rounded-0 px-0'
+                        required
+                    />
+                    <Form.Control
+                        value={eventTitle}
+                        onChange={(e) => setEventTitle(e.target.value)}
+                        type="text"
+                        placeholder="Event Name"
+                        className='my-4 fw-semibold border-top-0 border-start-0 border-end-0 rounded-0 px-0'
+                        required
+                    />
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        className='rounded-0 w-100 fw-semibold my-2'
+                    >Registration</Button>
+                </Form>
+            </div>
+        </div>
+    );
+};
+
+export default VolunteerRegistration;
 ```
 
 **[🔼Back to Top](#table-of-contents)**

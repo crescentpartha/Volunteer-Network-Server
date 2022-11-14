@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -33,6 +33,14 @@ async function run() {
             const newEvent = req.body;
             console.log('Adding a new Event = ', newEvent);
             const result = await eventCollection.insertOne(newEvent);
+            res.send(result);
+        });
+
+        // Load a particular event data from database to server-side | (id-wise data load)
+        app.get('/event/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await eventCollection.findOne(query);
             res.send(result);
         });
     }
