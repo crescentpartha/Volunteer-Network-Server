@@ -43,6 +43,7 @@ Table of Contents
   - [Deploy to Heroku](#deploy-to-heroku)
     - [`Server Deploy in Heroku` (___Server-Setup___)](#server-deploy-in-heroku-server-setup)
     - [`Deploy client side project with server side url`](#deploy-client-side-project-with-server-side-url)
+    - [`How to change a Git remote on Heroku`](#how-to-change-a-git-remote-on-heroku)
 
 # Volunteer-Network-Server
 
@@ -1045,5 +1046,16 @@ DB_PASS x7NfVIpH6MpNLRK0
 - [UPDATE SERVER with new changes](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone11/module69-deploy-to-heroku-and-practice-problem/00deploy-to-heroku.md#update-server-with-new-changes)
 - [Connect Server with Client and Deploy Client](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone11/module69-deploy-to-heroku-and-practice-problem/00deploy-to-heroku.md#connect-server-with-client-and-deploy-client)
 - [Test live website and push update to the client-side](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone11/module69-deploy-to-heroku-and-practice-problem/00deploy-to-heroku.md#693-test-live-website-and-push-update-to-the-client-side)
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `How to change a Git remote on Heroku`
+
+- [How to change a Git remote on Heroku](https://stackoverflow.com/questions/6226846/heroku-how-to-change-a-git-remote-on-heroku)
+- [How to switch deployment method from GitHub to Heroku Git with all the changes/app code available in a GitHub repo](https://help.heroku.com/CKVOUPSY/how-to-switch-deployment-method-from-github-to-heroku-git-with-all-the-changes-app-code-available-in-a-github-repo)
+
+``` JavaScript
+heroku git:remote -a app-name // This will create the heroku remote in your local repo for the app you wish to deploy to.
+```
 
 **[🔼Back to Top](#table-of-contents)**
