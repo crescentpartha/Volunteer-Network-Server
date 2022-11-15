@@ -40,6 +40,9 @@ Table of Contents
   - [DELETE a particular volunteerActivity data from database by creating a DELETE API](#delete-a-particular-volunteeractivity-data-from-database-by-creating-a-delete-api)
     - [`DELETE a particular volunteerActivity from server-side to database`](#delete-a-particular-volunteeractivity-from-server-side-to-database)
     - [`DELETE a particular volunteerActivity from client-side to server-side`](#delete-a-particular-volunteeractivity-from-client-side-to-server-side)
+  - [Deploy to Heroku](#deploy-to-heroku)
+    - [`Server Deploy in Heroku` (___Server-Setup___)](#server-deploy-in-heroku-server-setup)
+    - [`Deploy client side project with server side url`](#deploy-client-side-project-with-server-side-url)
 
 # Volunteer-Network-Server
 
@@ -915,5 +918,132 @@ const DisplayRegisterVolunteer = ({ activity }) => {
 
 export default DisplayRegisterVolunteer;
 ```
+
+**[🔼Back to Top](#table-of-contents)**
+
+## Deploy to Heroku
+
+### `Server Deploy in Heroku` (___Server-Setup___)
+
+- [Server-Setup](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone11/module69-deploy-to-heroku-and-practice-problem/00deploy-to-heroku.md#server-setup)
+- [Deploy to Heroku and Practice Problem
+](https://github.com/crescentpartha/02genius-car-services-server/blob/main/Steps.md#module-69-deploy-to-heroku-and-practice-problem)
+
+`Steps:` 
+
+1. heroku login
+2. heroku create
+
+``` Terminal
+$ heroku create
+ »   Warning: heroku update available from 7.53.0 to 7.63.4.
+Creating app... done, ⬢ ancient-cove-76148
+https://ancient-cove-76148.herokuapp.com/ | https://git.heroku.com/ancient-cove-76148.git
+```
+3. git push heroku main
+
+``` Terminal
+$ git push heroku main
+Enumerating objects: 41, done.
+Counting objects: 100% (41/41), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (39/39), done.
+Writing objects: 100% (41/41), 21.49 KiB | 1.26 MiB/s, done.
+Total 41 (delta 23), reused 3 (delta 0), pack-reused 0
+remote: Compressing source files... done.
+remote: Building source:
+remote: 
+remote: -----> Building on the Heroku-22 stack
+remote: -----> Determining which buildpack to use for this app
+remote: -----> Node.js app detected
+remote:        
+remote: -----> Creating runtime environment
+remote:
+remote:        NPM_CONFIG_LOGLEVEL=error
+remote:        NODE_VERBOSE=false
+remote:        NODE_ENV=production
+remote:        NODE_MODULES_CACHE=true
+remote:
+remote: -----> Installing binaries
+remote:        engines.node (package.json):  unspecified
+remote:        engines.npm (package.json):   unspecified (use default)
+remote:
+remote:        Resolving node version 18.x...
+remote:        Downloading and installing node 18.12.1...
+remote:        Using default npm version: 8.19.2
+remote:        
+remote: -----> Installing dependencies
+remote:        Installing node modules
+remote:        
+remote:        added 80 packages, and audited 81 packages in 1s
+remote:
+remote:        10 packages are looking for funding
+remote:          run `npm fund` for details
+remote:
+remote:        found 0 vulnerabilities
+remote:        
+remote: -----> Build
+remote:        
+remote: -----> Caching build
+remote:        - npm cache
+remote:        
+remote: -----> Pruning devDependencies
+remote:        
+remote:        up to date, audited 81 packages in 2s
+remote:
+remote:        10 packages are looking for funding
+remote:          run `npm fund` for details
+remote:
+remote:        found 0 vulnerabilities
+remote:        
+remote: -----> Build succeeded!
+remote: -----> Discovering process types
+remote:        Procfile declares types     -> (none)
+remote:        Default types for buildpack -> web
+remote:
+remote: -----> Compressing...
+remote:        Done: 44.1M
+remote: -----> Launching...
+remote:        Released v3
+remote:        https://ancient-cove-76148.herokuapp.com/ deployed to Heroku
+remote:
+remote: Starting November 28th, 2022, free Heroku Dynos, free Heroku Postgres, and free Heroku Data for Redis® will no longer be available.
+remote:
+remote: If you have apps using any of these resources, you must upgrade to paid plans by this date to ensure your apps continue to run 
+and to retain your data. For students, we will announce a new program by the end of September. Learn more at https://blog.heroku.com/next-chapter
+remote:
+remote: Verifying deploy... done.
+To https://git.heroku.com/ancient-cove-76148.git
+ * [new branch]      main -> main
+```
+
+- [https://git.heroku.com/ancient-cove-76148.git](https://git.heroku.com/ancient-cove-76148.git)
+
+`Renamed URL:` [https://git.heroku.com/volunteer--network--server.git](https://git.heroku.com/volunteer--network--server.git)
+
+4. Go to Heroku Dashboard > Current Project (volunteer--network--server) > Settings > Reveal Config Vars
+5. Copy Paste config vars from your .env file
+
+``` Terminal
+// Reveal Config Vars > Config Vars
+
+// KEY VALUE Add
+DB_USER volunteerUser
+DB_PASS x7NfVIpH6MpNLRK0
+```
+
+`Final URL:`
+
+- [https://volunteer--network--server.herokuapp.com/](https://volunteer--network--server.herokuapp.com/)
+- [https://volunteer--network--server.herokuapp.com/event](https://volunteer--network--server.herokuapp.com/event)
+- [https://volunteer--network--server.herokuapp.com/activity](https://volunteer--network--server.herokuapp.com/activity)
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `Deploy client side project with server side url`
+
+- [UPDATE SERVER with new changes](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone11/module69-deploy-to-heroku-and-practice-problem/00deploy-to-heroku.md#update-server-with-new-changes)
+- [Connect Server with Client and Deploy Client](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone11/module69-deploy-to-heroku-and-practice-problem/00deploy-to-heroku.md#connect-server-with-client-and-deploy-client)
+- [Test live website and push update to the client-side](https://github.com/crescentpartha/projectsHero/blob/main/milestone-module/milestone11/module69-deploy-to-heroku-and-practice-problem/00deploy-to-heroku.md#693-test-live-website-and-push-update-to-the-client-side)
 
 **[🔼Back to Top](#table-of-contents)**
