@@ -35,6 +35,11 @@ Table of Contents
     - [`Load all volunteerActivity data (json format) from database to server-side`](#load-all-volunteeractivity-data-json-format-from-database-to-server-side)
     - [`Create a custom hook with dependency to load all volunteerActivity data`](#create-a-custom-hook-with-dependency-to-load-all-volunteeractivity-data)
     - [`Display all volunteerActivities data by dynamically creating a table using React-Boostrap`](#display-all-volunteeractivities-data-by-dynamically-creating-a-table-using-react-boostrap)
+  - [Get a particular volunteerActivity data from database and Create a GET API to get a particular volunteerActivity (id-wise)](#get-a-particular-volunteeractivity-data-from-database-and-create-a-get-api-to-get-a-particular-volunteeractivity-id-wise)
+    - [`Get a particular volunteerActivity from database to server-side`](#get-a-particular-volunteeractivity-from-database-to-server-side)
+  - [DELETE a particular volunteerActivity data from database by creating a DELETE API](#delete-a-particular-volunteeractivity-data-from-database-by-creating-a-delete-api)
+    - [`DELETE a particular volunteerActivity from server-side to database`](#delete-a-particular-volunteeractivity-from-server-side-to-database)
+    - [`DELETE a particular volunteerActivity from client-side to server-side`](#delete-a-particular-volunteeractivity-from-client-side-to-server-side)
 
 # Volunteer-Network-Server
 
@@ -784,6 +789,126 @@ const DisplayRegisterVolunteer = ({ activity }) => {
             <td>{eventTitle}</td>
             <td>{eventDescription}</td>
             <td><FontAwesomeIcon className='bg-danger p-2 rounded text-light text-center' icon={faTrashCan} /></td>
+        </tr>
+    );
+};
+
+export default DisplayRegisterVolunteer;
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+## Get a particular volunteerActivity data from database and Create a GET API to get a particular volunteerActivity (id-wise)
+
+### `Get a particular volunteerActivity from database to server-side`
+
+``` JavaScript
+// In index.js
+
+// Create dynamic data transaction to/from the database
+async function run() {
+    try {
+        await client.connect();
+        const activityCollection = client.db('volunteerNetwork').collection('volunteerActivity');
+
+        // Load a particular volunteerActivity data from database to server-side | (id-wise data load)
+        app.get('/activity/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await activityCollection.findOne(query);
+            res.send(result);
+        });
+    }
+    finally {
+        // await client.close(); // commented, if I want to keep connection active;
+    }
+}
+run().catch(console.dir);
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+## DELETE a particular volunteerActivity data from database by creating a DELETE API
+
+### `DELETE a particular volunteerActivity from server-side to database`
+
+``` JavaScript
+// In index.js
+
+// Create dynamic data transaction to/from the database
+async function run() {
+    try {
+        await client.connect();
+        const activityCollection = client.db('volunteerNetwork').collection('volunteerActivity');
+
+        // DELETE a volunteerActivity data from server-side to database
+        app.delete('/activity/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await activityCollection.deleteOne(query);
+            console.log('One volunteerActivity is deleted');
+            res.send(result);
+        });
+    }
+    finally {
+        // await client.close(); // commented, if I want to keep connection active;
+    }
+}
+run().catch(console.dir);
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `DELETE a particular volunteerActivity from client-side to server-side`
+
+``` JavaScript
+// In DisplayRegisterVolunteer.js
+
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import useDisplayActivities from '../../../hooks/useDisplayActivities';
+
+const DisplayRegisterVolunteer = ({ activity }) => {
+    const { _id: id, name, email, date, eventTitle, eventDescription } = activity;
+    const [activities, setActivities] = useDisplayActivities();
+
+    const handleDelete = id => {
+        const proceed = window.confirm('Are you sure?');
+        if (proceed) {
+            console.log('Deleting a volunteerActivity with id = ', id);
+
+            // delete a volunteerActivity in client-side and send to the server-side
+            const url = `http://localhost:5000/activity/${id}`;
+            fetch(url, {
+                method: 'DELETE'
+            })
+            .then(res => res.json())
+            .then(data => {
+                // console.log(data);
+                // console.log(data?.deletedCount);
+                if (data.deletedCount > 0) {
+                    console.log('Deleted');
+                    // remove deleted volunteerActivity from the state in client-side for better user experience
+                    const remaining = activities.filter(activity => activity._id !== id);
+                    setActivities(remaining);
+                }
+            });
+        }
+    }
+
+    return (
+        <tr className='text-start'>
+            <td>{name}</td>
+            <td>{email}</td>
+            <td>{date}</td>
+            <td>{eventTitle}</td>
+            <td>{eventDescription}</td>
+            <td>
+                <button className='btn p-0 border-0' onClick={() => handleDelete(id)}>
+                    <FontAwesomeIcon className='bg-danger p-2 rounded text-light text-center' icon={faTrashCan} />
+                </button>
+            </td>
         </tr>
     );
 };

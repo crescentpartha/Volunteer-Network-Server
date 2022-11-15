@@ -64,6 +64,23 @@ async function run() {
             const activities = await cursor.toArray();
             res.send(activities);
         });
+
+        // Load a particular volunteerActivity data from database to server-side | (id-wise data load)
+        app.get('/activity/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await activityCollection.findOne(query);
+            res.send(result);
+        });
+
+        // DELETE a volunteerActivity data from server-side to database
+        app.delete('/activity/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await activityCollection.deleteOne(query);
+            console.log('One volunteerActivity is deleted');
+            res.send(result);
+        });
     }
     finally {
         // await client.close(); // commented, if I want to keep connection active;
