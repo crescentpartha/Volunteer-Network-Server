@@ -28,6 +28,9 @@ Table of Contents
     - [`Get a particular event from database to server-side`](#get-a-particular-event-from-database-to-server-side)
     - [`Create a custom hook with dependency to load individual event data` - (___id-wise___)](#create-a-custom-hook-with-dependency-to-load-individual-event-data---id-wise)
     - [`Create a Controlled Inputs Form using React-Bootstrap`](#create-a-controlled-inputs-form-using-react-bootstrap)
+  - [Add a new volunteerActivity to the database and Create a POST API to add a new volunteerActivity](#add-a-new-volunteeractivity-to-the-database-and-create-a-post-api-to-add-a-new-volunteeractivity)
+    - [`POST a new volunteerActivity from server-side to database`](#post-a-new-volunteeractivity-from-server-side-to-database)
+    - [`POST a new volunteerActivity from client-side to server-side`](#post-a-new-volunteeractivity-from-client-side-to-server-side)
 
 # Volunteer-Network-Server
 
@@ -364,8 +367,11 @@ export default AddEvent;
 ``` JavaScript
 // In AddEvent.js
 
+import { useNavigate } from 'react-router-dom';
+
 const AddEvent = () => {
     const { register, handleSubmit } = useForm();
+    const navigate = useNavigate();
 
     const onSubmit = data => {
         console.log(data);
@@ -383,6 +389,7 @@ const AddEvent = () => {
         .then(result => {
             console.log(result);
         })
+        navigate('/home');
     }
 
     <form className='d-flex flex-column gap-2' onSubmit={handleSubmit(onSubmit)}>
@@ -495,14 +502,16 @@ export default useLoadSingleEvent;
 
 import React, { useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useLoadSingleEvent from '../../../hooks/useLoadSingleEvent';
 
 const VolunteerRegistration = () => {
     const { eventDetailId } = useParams();
     const [event] = useLoadSingleEvent(eventDetailId);
-    const { title, description } = event;
+    const { title, description, bannerImg } = event;
     // console.log(event, title);
+
+    const navigate = useNavigate();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -517,9 +526,10 @@ const VolunteerRegistration = () => {
 
     const handleRegistration = (e) => {
         e.preventDefault();
-        const registration = { name, email, date, eventDescription, eventTitle };
+        const registration = { name, email, date, eventDescription, eventTitle, bannerImg };
 
         console.log(registration);
+        navigate('/admin/volunteerRegisterList');
     }
 
     return (
@@ -576,6 +586,75 @@ const VolunteerRegistration = () => {
             </div>
         </div>
     );
+};
+
+export default VolunteerRegistration;
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+## Add a new volunteerActivity to the database and Create a POST API to add a new volunteerActivity 
+
+### `POST a new volunteerActivity from server-side to database`
+
+``` JavaScript
+// In index.js
+
+// Create dynamic data transaction to/from the database
+async function run() {
+    try {
+        await client.connect();
+        const activityCollection = client.db('volunteerNetwork').collection('volunteerActivity');
+
+        // POST a new volunteerActivity from server-side to database | Create a new volunteerActivity POST API
+        app.post('/activity', async(req, res) => {
+            const newVolunteerActivity = req.body;
+            console.log('Adding a new volunteerActivity = ', newVolunteerActivity);
+            const result = await activityCollection.insertOne(newVolunteerActivity);
+            res.send(result);
+        });
+    }
+    finally {
+        // await client.close(); // commented, if I want to keep connection active;
+    }
+}
+run().catch(console.dir);
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `POST a new volunteerActivity from client-side to server-side`
+
+``` JavaScript
+// In VolunteerRegistration.js
+
+import { useNavigate } from 'react-router-dom';
+
+const VolunteerRegistration = () => {    
+    const navigate = useNavigate();
+
+    const handleRegistration = (e) => {
+        e.preventDefault();
+        const registration = { name, email, date, eventDescription, eventTitle, bannerImg };
+        // console.log(registration);
+
+        // POST a new volunteerActivity from client-side to database
+        const url = `http://localhost:5000/activity`;
+        fetch(url, {
+            method: 'POST', 
+            headers: {
+                'content-type': 'application/json'
+            }, 
+            body: JSON.stringify(registration)
+        })
+        .then(res => res.json())
+        .then(result => {
+            console.log(result);
+        })
+        navigate('/admin/volunteerRegisterList');
+    }
+
+    <Form onSubmit={handleRegistration} className='w-100 mx-auto'>
 };
 
 export default VolunteerRegistration;

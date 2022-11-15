@@ -19,6 +19,7 @@ async function run() {
     try {
         await client.connect();
         const eventCollection = client.db('volunteerNetwork').collection('event');
+        const activityCollection = client.db('volunteerNetwork').collection('volunteerActivity');
 
         // get all event data (json format) from database | create a event API of get method
         app.get('/event', async (req, res) => {
@@ -41,6 +42,16 @@ async function run() {
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
             const result = await eventCollection.findOne(query);
+            res.send(result);
+        });
+
+        /* ---------------------------------------------------------------------------- */
+
+        // POST a new volunteerActivity from server-side to database | Create a new volunteerActivity POST API
+        app.post('/activity', async(req, res) => {
+            const newVolunteerActivity = req.body;
+            console.log('Adding a new volunteerActivity = ', newVolunteerActivity);
+            const result = await activityCollection.insertOne(newVolunteerActivity);
             res.send(result);
         });
     }
