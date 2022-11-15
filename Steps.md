@@ -31,6 +31,10 @@ Table of Contents
   - [Add a new volunteerActivity to the database and Create a POST API to add a new volunteerActivity](#add-a-new-volunteeractivity-to-the-database-and-create-a-post-api-to-add-a-new-volunteeractivity)
     - [`POST a new volunteerActivity from server-side to database`](#post-a-new-volunteeractivity-from-server-side-to-database)
     - [`POST a new volunteerActivity from client-side to server-side`](#post-a-new-volunteeractivity-from-client-side-to-server-side)
+  - [All volunteerActivity data Load from Database and Create a volunteerActivity GET API to load volunteerActivities data](#all-volunteeractivity-data-load-from-database-and-create-a-volunteeractivity-get-api-to-load-volunteeractivities-data)
+    - [`Load all volunteerActivity data (json format) from database to server-side`](#load-all-volunteeractivity-data-json-format-from-database-to-server-side)
+    - [`Create a custom hook with dependency to load all volunteerActivity data`](#create-a-custom-hook-with-dependency-to-load-all-volunteeractivity-data)
+    - [`Display all volunteerActivities data by dynamically creating a table using React-Boostrap`](#display-all-volunteeractivities-data-by-dynamically-creating-a-table-using-react-boostrap)
 
 # Volunteer-Network-Server
 
@@ -662,3 +666,129 @@ export default VolunteerRegistration;
 
 **[🔼Back to Top](#table-of-contents)**
 
+## All volunteerActivity data Load from Database and Create a volunteerActivity GET API to load volunteerActivities data
+
+### `Load all volunteerActivity data (json format) from database to server-side`
+
+``` JavaScript
+// In index.js
+
+// Create dynamic data transaction to/from the database
+async function run() {
+    try {
+        await client.connect();
+        const activityCollection = client.db('volunteerNetwork').collection('volunteerActivity');
+
+        // get all volunteerActivity data (json format) from database | create a volunteerActivity Get API to load all volunteerActivities data
+        app.get('/activity', async(req, res) => {
+            const query = {};
+            const cursor = activityCollection.find(query);
+            const activities = await cursor.toArray();
+            res.send(activities);
+        });
+    }
+    finally {
+        // await client.close(); // commented, if I want to keep connection active;
+    }
+}
+run().catch(console.dir);
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `Create a custom hook with dependency to load all volunteerActivity data`
+
+``` JavaScript
+// In useDisplayActivities.js | Custom hooks with dependency
+
+import { useEffect, useState } from 'react';
+
+const useDisplayActivities = () => {
+    const [activities, setActivities] = useState([]);
+
+    useEffect( () => {
+        const url = `http://localhost:5000/activity`;
+        fetch(url)
+        .then(res => res.json())
+        .then(data => setActivities(data));
+    }, [activities]);
+
+    return [activities, setActivities];
+}
+
+export default useDisplayActivities;
+```
+
+**[🔼Back to Top](#table-of-contents)**
+
+### `Display all volunteerActivities data by dynamically creating a table using React-Boostrap`
+
+``` JavaScript
+// In VolunteerRegisterList.js
+
+import React from 'react';
+import { Table } from 'react-bootstrap';
+import useDisplayActivities from '../../../hooks/useDisplayActivities';
+import DisplayRegisterVolunteer from './DisplayRegisterVolunteer';
+
+const VolunteerRegisterList = () => {
+    const [activities] = useDisplayActivities();
+
+    return (
+        <div className='p-4 border-bottom'>
+            <h2 className='text-start'>Volunteer Register List</h2>
+            <div>
+                <Table responsive>
+                    <thead className='bg-light'>
+                        <tr className='text-start'>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Registering Date</th>
+                            <th>Event Title</th>
+                            <th>Event Description</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            activities.map(activity => <DisplayRegisterVolunteer
+                                key={activity._id}
+                                activity={activity}
+                            ></DisplayRegisterVolunteer>)
+                        }
+                    </tbody>
+                </Table>
+            </div>
+        </div>
+    );
+};
+
+export default VolunteerRegisterList;
+```
+
+``` JavaScript
+// In DisplayRegisterVolunteer.js
+
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
+
+const DisplayRegisterVolunteer = ({ activity }) => {
+    const { name, email, date, eventTitle, eventDescription } = activity;
+
+    return (
+        <tr className='text-start'>
+            <td>{name}</td>
+            <td>{email}</td>
+            <td>{date}</td>
+            <td>{eventTitle}</td>
+            <td>{eventDescription}</td>
+            <td><FontAwesomeIcon className='bg-danger p-2 rounded text-light text-center' icon={faTrashCan} /></td>
+        </tr>
+    );
+};
+
+export default DisplayRegisterVolunteer;
+```
+
+**[🔼Back to Top](#table-of-contents)**
