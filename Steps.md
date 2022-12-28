@@ -2,7 +2,7 @@ Table of Contents
 ---
 
 - [Volunteer-Network-Server](#volunteer-network-server)
-  - [Basic Setup of Client-Side & Server-Side](#basic-setup-of-client-side--server-side)
+  - [Basic Setup of Client-Side \& Server-Side](#basic-setup-of-client-side--server-side)
     - [`Basic Client Project Setup Steps`](#basic-client-project-setup-steps)
     - [`Basic Server Setup Steps`](#basic-server-setup-steps)
   - [Create mongodb atlas account and Connect to the database with a secure password on an environment variable](#create-mongodb-atlas-account-and-connect-to-the-database-with-a-secure-password-on-an-environment-variable)
@@ -44,6 +44,7 @@ Table of Contents
     - [`Server Deploy in Heroku` (___Server-Setup___)](#server-deploy-in-heroku-server-setup)
     - [`Deploy client side project with server side url`](#deploy-client-side-project-with-server-side-url)
     - [`How to change a Git remote on Heroku`](#how-to-change-a-git-remote-on-heroku)
+  - [Project Setup 10 (`Server Deploy on Vercel`)](#project-setup-10-server-deploy-on-vercel)
 
 # Volunteer-Network-Server
 
@@ -1057,5 +1058,12 @@ DB_PASS x7NfVIpH6MpNLRK0
 ``` JavaScript
 heroku git:remote -a app-name // This will create the heroku remote in your local repo for the app you wish to deploy to.
 ```
+
+**[🔼Back to Top](#table-of-contents)**
+
+## Project Setup 10 (`Server Deploy on Vercel`)
+
+- [Resources](https://github.com/crescentpartha/warehouse-management-client-side-crescentpartha/blob/main/books-warehouse/public/Steps.md#project-setup-10-server-deploy-on-vercel)
+- [How to deploy Express API without using vercel CLI](https://github.com/crescentpartha/warehouse-management-client-side-crescentpartha/blob/main/books-warehouse/public/Steps.md#how-to-deploy-express-api-without-using-vercel-cli)
 
 **[🔼Back to Top](#table-of-contents)**

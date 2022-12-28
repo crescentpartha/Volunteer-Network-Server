@@ -17,7 +17,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 // Create dynamic data transaction to/from the database
 async function run() {
     try {
-        await client.connect();
+        // await client.connect();
+        client.connect();
         const eventCollection = client.db('volunteerNetwork').collection('event');
         const activityCollection = client.db('volunteerNetwork').collection('volunteerActivity');
 

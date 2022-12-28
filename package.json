@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Volunteer-Network-Server is the server-side project for Volunteer-Network (client-side) project.",
   "main": "index.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "start": "node index.js",
     "start-dev": "nodemon index.js",
